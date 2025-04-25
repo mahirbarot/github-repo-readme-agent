@@ -97,7 +97,7 @@ const ReadmeGenerator = () => {
       
       // Initialize GitHub API client
       const octokit = new Octokit({
-        auth: import.meta.env.VITE_GITHUB_TOKEN
+        auth: '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'
       });
 
       // First fetch repository information
