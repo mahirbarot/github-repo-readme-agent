@@ -101,8 +101,7 @@ const ReadmeGenerator = () => {
       
       // Initialize GitHub API client with token if available
       const octokit = new Octokit({
-        //auth: import.meta.env.VITE_GITHUB_TOKEN || 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
-        auth: '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'
+        auth: import.meta.env.VITE_GITHUB_TOKEN
       });
       
       // Show a warning if no token is provided
