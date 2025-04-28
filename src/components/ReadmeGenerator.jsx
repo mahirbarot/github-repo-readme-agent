@@ -16,6 +16,10 @@ const ReadmeGenerator = () => {
   const [showPromptPreview, setShowPromptPreview] = useState(false);
   const [generatedPrompt, setGeneratedPrompt] = useState('');
   const [selectedModel, setSelectedModel] = useState('mistral-saba-24b');
+  const [apiKeysWarning, setApiKeysWarning] = useState({
+    github: !import.meta.env.VITE_GITHUB_TOKEN,
+    groq: !import.meta.env.VITE_GROQ_API_KEY
+  });
   const [availableModels, setAvailableModels] = useState([
     { id: 'mistral-saba-24b', name: 'Mistral Saba 24B', enabled: true },
     { id: 'qwen-2.5-32b', name: 'Qwen 2.5 32B', enabled: true },
@@ -95,10 +99,16 @@ const ReadmeGenerator = () => {
 
       const { owner, repo } = extractRepoInfo(githubUrl);
       
-      // Initialize GitHub API client
+      // Initialize GitHub API client with token if available
       const octokit = new Octokit({
-        auth: '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'
+        //auth: import.meta.env.VITE_GITHUB_TOKEN || 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
+        auth: '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'
       });
+      
+      // Show a warning if no token is provided
+      if (!import.meta.env.VITE_GITHUB_TOKEN) {
+        console.warn('No GitHub token provided. Using unauthenticated requests with lower rate limits.');
+      }
 
       // First fetch repository information
       const repoData = await octokit.rest.repos.get({ owner, repo });
@@ -459,6 +469,11 @@ IMPORTANT FORMATTING INSTRUCTIONS:
         dangerouslyAllowBrowser: true
       });
 
+      // Check if GROQ API key is available
+      if (!import.meta.env.VITE_GROQ_API_KEY) {
+        throw new Error('GROQ API key is missing. Please add it to your environment variables as VITE_GROQ_API_KEY.');
+      }
+
       // Build the base prompt
       const basePrompt = buildDefaultPrompt(repoContext, badges, sections);
       
@@ -639,6 +654,25 @@ IMPORTANT FORMATTING INSTRUCTIONS:
         <h1 className="title">
           GitHub README Generator AI Agent
         </h1>
+        
+        {(apiKeysWarning.github || apiKeysWarning.groq) && (
+          <div className="api-warning">
+            <h3>⚠️ API Key Warning</h3>
+            {apiKeysWarning.github && (
+              <p>
+                GitHub API token is missing. You can still use the app with limited functionality, but you might encounter rate limits.
+                To add your token, create a <code>.env</code> file with <code>VITE_GITHUB_TOKEN=your_token_here</code>.
+              </p>
+            )}
+            {apiKeysWarning.groq && (
+              <p>
+                GROQ API key is missing. README generation will not work without this key.
+                To add your key, create a <code>.env</code> file with <code>VITE_GROQ_API_KEY=your_key_here</code>.
+                You can get a key from <a href="https://console.groq.com/keys" target="_blank" rel="noopener noreferrer">Groq Console</a>.
+              </p>
+            )}
+          </div>
+        )}
         
         <div className="section">
           <div className="input-group">
@@ -935,6 +969,36 @@ IMPORTANT FORMATTING INSTRUCTIONS:
       
       {/* Add CSS for new components */}
       <style jsx>{`
+        .api-warning {
+          background-color: #fff3cd;
+          color: #856404;
+          border: 1px solid #ffeeba;
+          border-radius: 0.375rem;
+          padding: 1rem;
+          margin-bottom: 1.5rem;
+        }
+        
+        .api-warning h3 {
+          margin-top: 0;
+          font-size: 1.1rem;
+        }
+        
+        .api-warning p {
+          margin-bottom: 0.5rem;
+        }
+        
+        .api-warning code {
+          background-color: #fff;
+          padding: 0.2rem 0.4rem;
+          border-radius: 0.25rem;
+          font-size: 0.875rem;
+        }
+        
+        .api-warning a {
+          color: #0056b3;
+          text-decoration: underline;
+        }
+        
         .select-input {
           padding: 0.5rem;
           border: 1px solid #e2e8f0;

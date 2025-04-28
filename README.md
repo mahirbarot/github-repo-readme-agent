@@ -16,8 +16,7 @@ A professional README generator that creates comprehensive documentation for you
 - React
 - Vite
 - ChakraUI
-- LangChain
-- OpenAI GPT-4
+- GROQ API
 - GitHub API
 - Octokit
 
@@ -37,7 +36,7 @@ A professional README generator that creates comprehensive documentation for you
 3. Create a `.env` file in the root directory and add your API keys:
    ```
    VITE_GITHUB_TOKEN=your_github_token_here
-   VITE_OPENAI_API_KEY=your_openai_api_key_here
+   VITE_GROQ_API_KEY=your_groq_api_key_here
    ```
 
 4. Start the development server:
@@ -56,7 +55,7 @@ A professional README generator that creates comprehensive documentation for you
 ## Required API Keys
 
 - **GitHub Token**: Create a personal access token with `repo` scope at [GitHub Settings](https://github.com/settings/tokens)
-- **OpenAI API Key**: Get your API key from [OpenAI Platform](https://platform.openai.com/api-keys)
+- **GROQ API Key**: Get your API key from [GROQ Console](https://console.groq.com/keys)
 
 ## Contributing
 
